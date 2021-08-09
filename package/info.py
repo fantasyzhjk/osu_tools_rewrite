@@ -1,10 +1,11 @@
 from requests import get
-from json import loads
+import json
 
 
 class GosuInfoStd:
     def __init__(self):
-        self.info = loads(get('http://localhost:24050/json').content)
+        # self.info = loads(get('http://localhost:24050/json').content)
+        self.info = json.load(open('./package/gosu_output.json', 'r', encoding='utf8'))
 
     def state(self):
         i = self.info['menu']['state']
