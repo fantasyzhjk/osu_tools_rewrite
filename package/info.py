@@ -8,6 +8,17 @@ import config
 import requests
 
 
+def get_self_pp_plus():
+    proxies = {
+        "http": config.proxy_http,
+        "https": config.proxy_https
+    }
+    url = 'https://syrin.me/pp+/api/user/' + config.user_id + '/'
+    index = get(url=url, proxies=proxies)
+    pp_plus = loads(index.text)
+    return pp_plus['user_data']
+
+
 def get_best():
     headers = {
         'cookie': config.cookie
