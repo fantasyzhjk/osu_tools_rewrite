@@ -1,18 +1,43 @@
 from requests import get
-import json
+from json import loads
+from json import load
+import oppadc
+
+
+class MapInfo:
+    def __init__(self, dir):
+        # dir = "D:/OSU/Songs/962593 inabakumori - Lost Umbrella (1)/inabakumori - Lost Umbrella (amanatu2) [Extra].osu"
+        self.MapInfo = oppadc.OsuMap(file_path=dir)
+
+    def note(self):
+        i = self.MapInfo.amount_circle
+        return i
+
+    def slider(self):
+        i = self.MapInfo.amount_slider
+        return i
 
 
 class GosuInfoStd:
     def __init__(self):
-        # self.info = loads(get('http://localhost:24050/json').content)
-        self.info = json.load(open('./package/gosu_output.json', 'r', encoding='utf8'))
+        self.info = loads(get('http://localhost:24050/json').content)
+        # self.info = load(open('./package/gosu_output.json', 'r', encoding='utf8'))
 
     def state(self):
         i = self.info['menu']['state']
         return i
 
+    def map_status(self):
+        i = self.info['menu']['bm']['rankedStatus']
+        return i
+
     def mode(self):
         i = self.info['menu']['gameMode']
+        return i
+
+    def map_dir(self):
+        i = (self.info['settings']['folders']['songs'] + '\\' + self.info['menu']['bm']['path']['folder'] +
+             '\\' + self.info['menu']['bm']['path']['file'])
         return i
 
     def songs_dir(self):
@@ -80,7 +105,7 @@ class GosuInfoStd:
         return i
 
     def stars(self):
-        i = self.info['menu']['bm']['stats']['SR']
+        i = self.info['menu']['bm']['stats']['fullSR']
         return i
 
     def slider_breaks(self):
@@ -99,8 +124,24 @@ class GosuInfoStd:
         i = self.info['menu']['pp']['100']
         return i
 
+    def pp_99(self):
+        i = self.info['menu']['pp']['99']
+        return i
+
+    def pp_98(self):
+        i = self.info['menu']['pp']['98']
+        return i
+
     def pp_97(self):
         i = self.info['menu']['pp']['97']
+        return i
+
+    def pp_96(self):
+        i = self.info['menu']['pp']['96']
+        return i
+
+    def pp_95(self):
+        i = self.info['menu']['pp']['95']
         return i
 
     def pp_fc(self):
@@ -154,3 +195,16 @@ class GosuInfoStd:
     def rank_result(self):
         i = self.info['gameplay']['hits']['grade']['current']
         return i
+
+    def pp_strains(self):
+        i = self.info['menu']['pp']['strains']
+        return i
+
+    def ur_strains(self):
+        i = self.info['gameplay']['hits']['hitErrorArray']
+        return i
+
+
+if __name__ == '__main__':
+    a = MapInfo()
+    print(a.note())
