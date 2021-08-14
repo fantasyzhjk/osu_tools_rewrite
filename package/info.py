@@ -2,6 +2,28 @@ from requests import get
 from json import loads
 from json import load
 import oppadc
+import sys
+sys.path.append("..")
+import config
+import requests
+
+
+def get_best():
+    headers = {
+        'cookie': config.cookie
+        }
+    proxies = {
+        "http": config.proxy_http,
+        "https": config.proxy_https
+    }
+    session = requests.Session()
+    url1 = 'https://osu.ppy.sh/users/' + str(config.user_id) + '/scores/best?mode=osu&offset=0&limit=51'
+    html1 = session.get(url1, headers=headers, proxies=proxies)  # 使用requests来发送请求
+    html1 = loads(html1.text)
+    url2 = 'https://osu.ppy.sh/users/' + str(config.user_id) + '/scores/best?mode=osu&offset=51&limit=51'
+    html2 = session.get(url2, headers=headers, proxies=proxies)
+    html2 = loads(html2.text)
+    return html1, html2
 
 
 class MapInfo:

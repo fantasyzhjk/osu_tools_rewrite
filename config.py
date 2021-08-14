@@ -7,7 +7,7 @@
 不想输出的信息可以把大小改成0，把坐标也改成(0, 0)
 除了写对齐的，其他都是左上为描点，记得自己计算
 
-默认已经配置好可以直接使用
+默认已经配置好大部分，略微填写可以直接使用
 """
 from PIL import Image
 from PIL import ImageOps
@@ -21,13 +21,17 @@ from PIL import ImageOps
 '''
 用户变量配置
 '''
-user_name = 'Freezetime'
-user_id = '11350021'
+user_name = ''
+user_id = ''
 # 用户头像路径
 user_avatar = 'resource/image/avatar.jpg'
 # 个性签名
-user_signature = '菜狗！'
-
+user_signature = ''
+# 已经登录osu官网的浏览器cookie。如何获取？ 百度
+cookie = ''
+# 代理
+proxy_http = ""
+proxy_https = ""
 '''
 特殊信息输出打印配置
 '''
