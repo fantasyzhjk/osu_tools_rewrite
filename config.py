@@ -160,10 +160,10 @@ output_difficulty = ["resource/fonts/Torus-SemiBold.ttf", 36, 960, 301, (111, 25
 output_difficulty_format = "str({0}).format(g_inf.difficulty())"
 
 output_player_name = ["resource/fonts/Torus-Regular.ttf", 39, 1244, 540-3, (172, 172, 172), 'lc']
-output_key_count_k1 = ["resource/fonts/Torus-Regular.ttf", 30, 157, 1015-3, (235, 194, 0), 'cc']
-output_key_count_k2 = ["resource/fonts/Torus-Regular.ttf", 30, 236, 1015-3, (235, 194, 0), 'cc']
-output_key_count_m1 = ["resource/fonts/Torus-Regular.ttf", 30, 315, 1015-3, (235, 194, 0), 'cc']
-output_key_count_m2 = ["resource/fonts/Torus-Regular.ttf", 30, 393, 1015-3, (235, 194, 0), 'cc']
+output_key_count_k1 = ["resource/fonts/Torus-SemiBold.ttf", 28, 157, 1015-3, (235, 194, 0), 'cc']
+output_key_count_k2 = ["resource/fonts/Torus-SemiBold.ttf", 28, 236, 1015-3, (235, 194, 0), 'cc']
+output_key_count_m1 = ["resource/fonts/Torus-SemiBold.ttf", 28, 315, 1015-3, (235, 194, 0), 'cc']
+output_key_count_m2 = ["resource/fonts/Torus-SemiBold.ttf", 28, 393, 1015-3, (235, 194, 0), 'cc']
 
 output_score = ["resource/fonts/Torus-Regular.ttf", 90, 960, 221, (222, 0, 255), 'cc']
 output_score_format = "'{:,}'.format(g_inf.score())"

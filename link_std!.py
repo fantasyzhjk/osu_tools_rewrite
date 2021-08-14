@@ -393,7 +393,7 @@ def output_game_time(im, y_offset):
         time = time_str.split(' ')
         time[1] = time[1].split(':')[0] + ':' + time[1].split(':')[1]
     except:
-        time_str = strftime("%Y-%m-%d %H:%M", localtime())
+        time_str = strftime("%Y/%m/%d %H:%M", localtime())
         time = time_str.split(' ')
         time[1] = time[1].split(':')[0] + ':' + time[1].split(':')[1]
 
