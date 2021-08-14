@@ -4,6 +4,8 @@
 
 ##### 需要提前打开[l3lackShark/gosumemory (github.com) (Release)](https://github.com/l3lackShark/gosumemory/releases/)
 
+##### 使用Windows Terminal体验最佳
+
 **程序没毒程序没毒程序没毒**
 
 ---
