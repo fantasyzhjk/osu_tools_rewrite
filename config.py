@@ -185,5 +185,6 @@ output_accuracy = ["resource/fonts/Torus-Regular.ttf", 41, 1492, 233 - 3, (255, 
 output_accuracy_format = "str({0}).format(g_inf.accuracy()) + '%'"
 
 output_time_length_full = ["resource/fonts/Torus-Regular.ttf", 36, 121, 318 - 3, (235, 194, 0), 'lc']
-output_time_length_full_format = "str(int((float(str({0}).format(g_inf.time_length_full()))/1000)/60)) + ':' + str(int((float(str({0}).format(g_inf.time_length_full()))/1000)%60))"
+output_time_length_full_format = ("str(int((float(str({0}).format(g_inf.time_length_full()))/1000)/60)) + ':' + "
+                                  "str(int((float(str({0}).format(g_inf.time_length_full()))/1000)%60))")
 # 什么狗屁玩意又臭又长，真亏我写得出来，你们自己看着改改，反正最后要eval这个语句，要一句成表达式，或者你字符串拼接我也不管
