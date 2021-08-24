@@ -19,6 +19,7 @@ def img_judge(im):
 
 def bg_maker(im):
     im = Image.open(im)
+    im = im.convert('RGB')
     im = im.filter(ImageFilter.GaussianBlur(radius=config.gaussian_blur))  # 高斯模糊
     im = im.point(lambda p: p * config.bg_dim)  # 暗化
     im = img_scale_resize(im, config.bg_resize_weight)  # 等比缩放

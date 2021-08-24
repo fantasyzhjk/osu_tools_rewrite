@@ -6,7 +6,6 @@ from package.image import info_print
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageOps
-import config
 from datetime import datetime
 from io import BytesIO
 from json import loads
@@ -17,6 +16,7 @@ import win32clipboard
 from PIL import ImageFilter
 from PIL import ImageFont
 from requests import get
+import config
 
 '''------------------------------------------------------------------------------------------------------------------'''
 '''------------------------------------------------------------------------------------------------------------------'''
@@ -81,9 +81,9 @@ def main():
                 bg = bg_dir
                 bg = bg_maker(bg)
             else:
-                with open(config.bg_if_non) as im:
-                    bg = Image.open(im).point(lambda p: p * 0.90)  # 背景暗化
-                    bg = img_scale_resize(bg, config.bg_resize_weight)  # 等比缩放
+                im = config.bg_if_non
+                bg = Image.open(im).point(lambda p: p * 0.90)  # 背景暗化
+                bg = img_scale_resize(bg, config.bg_resize_weight)  # 等比缩放
 
             score_model = Image.open(config.bg_model_dir)
             # 因为背景图比例不一，而且已经缩放到和模板一致宽度，所以才有了y_offset
@@ -95,11 +95,12 @@ def main():
             im = output_info(bg, g_inf, y_offset)  # 大部分输出
             im = output_rank_icon(im, g_inf, y_offset)
             im = output_method_mod(im, g_inf.mod_str(), y_offset)
-            im = output_method_avatar(im, y_offset)
+            im = output_method_avatar(im, g_inf, y_offset)
             im = output_line_chart_pp(im, g_inf, y_offset)
             im = output_line_chart_ur(im, g_inf, y_offset)
             im = output_note_count(im, g_inf, y_offset)
             im = output_rank_status(im, g_inf, y_offset)
+            im = output_pp(im, g_inf, y_offset)
             im = output_game_time(im, y_offset)  # 一定要放在所有打印的最后边 我也不知道为什么！！！
 
             box = (0, y_offset, config.bg_resize_weight, y_offset + config.bg_resize_height)
@@ -174,7 +175,6 @@ def output_info(im, g_inf, y_offset):
               'c0',
               'slider_breaks',
               'stars',
-              'pp_current',
               'pp_ss',
               'pp_99',
               'pp_98',
@@ -200,6 +200,7 @@ def output_info(im, g_inf, y_offset):
     accuracy = eval(config.output_accuracy_format)
     time_length_full = eval(config.output_time_length_full_format)
     user_signature = config.user_signature
+    ur = eval(config.output_ur_format)
     for i in ['bpm',
               'mapper',
               'difficulty',
@@ -211,7 +212,8 @@ def output_info(im, g_inf, y_offset):
               'max_combo',
               'accuracy',
               'time_length_full',
-              'user_signature']:
+              'user_signature',
+              'ur']:
         i = eval('''[eval(i), config.output_{0}[0], config.output_{0}[1], config.output_{0}[2],
                      config.output_{0}[3], config.output_{0}[4], config.output_{0}[5]]'''.format(i))
         im = info_print(im, i[0], i[1], i[2], i[3], i[4] + y_offset, i[5], i[6])
@@ -245,8 +247,11 @@ def output_method_mod(im, mods_str, y_offset):  # 输入图片,mod的字符串,�
 
 
 # 头像打印方法，默认裁为圆形
-def output_method_avatar(im, y_offset):  # 传入im, y_offset，传出im
-    avatar = Image.open(config.user_avatar)
+def output_method_avatar(im, g_inf, y_offset):  # 传入im, y_offset，传出im
+    if g_inf.player_name() == 'osu!':
+        avatar = Image.open(config.osu_image)
+    else:
+        avatar = Image.open(config.user_avatar)
     avatar = avatar.resize(config.avatar_size)
     border = Image.open('resource/image/image_model/avatar-a.png')
     border = border.resize(config.avatar_size).convert('L')
@@ -260,52 +265,55 @@ def output_line_chart_pp(im, g_inf, y_offset):
     pp_strains_size = [config.pp_strains_location2[0] - config.pp_strains_location[0],
                        config.pp_strains_location2[1] - config.pp_strains_location[1]]
     pp_strains = g_inf.pp_strains()
-    y = pp_strains
-    # 生成x列表
-    n = 0
-    for i in pp_strains:
-        n += 1
-    m = 0
-    x = []
-    for i in range(n):
-        x.append(m)
-        m += 1
-    # y列表等比例缩放
-    max_num_y = 0
-    for num in y:
-        if num > max_num_y:
-            max_num_y = num
-        else:
-            pass
-    scale_y = pp_strains_size[1] / max_num_y
-    new_y = []
-    for num in y:
-        new_num = num * scale_y
-        new_y.append(new_num)
-    # y列表等比例缩放
-    max_num_x = x[-1]
-    scale_x = pp_strains_size[0] / max_num_x
-    new_x = []
-    for num in x:
-        new_num = num * scale_x
-        new_x.append(new_num)
-    # 换算成对应坐标
-    final_y = []
-    for y in new_y:  # 里边有一步轴对称
-        new_y_ = config.pp_strains_location2[1] - y + y_offset
-        final_y.append(new_y_)
-    final_x = []
-    for x in new_x:
-        new_x_ = config.pp_strains_location[0] + x
-        final_x.append(new_x_)
-    xy = []
-    for i in range(n):
-        xy.append((final_x[i], final_y[i]))
-    # 画线
-    draw = ImageDraw.Draw(im)
-    for i in range(n - 1):
-        x_y = [xy[i], xy[i + 1]]
-        draw.line(x_y, fill=config.pp_strains_color, width=config.pp_strains_line_width)
+    if pp_strains is None:
+        pass
+    else:
+        y = pp_strains
+        # 生成x列表
+        n = 0
+        for i in pp_strains:
+            n += 1
+        m = 0
+        x = []
+        for i in range(n):
+            x.append(m)
+            m += 1
+        # y列表等比例缩放
+        max_num_y = 0
+        for num in y:
+            if num > max_num_y:
+                max_num_y = num
+            else:
+                pass
+        scale_y = pp_strains_size[1] / max_num_y
+        new_y = []
+        for num in y:
+            new_num = num * scale_y
+            new_y.append(new_num)
+        # y列表等比例缩放
+        max_num_x = x[-1]
+        scale_x = pp_strains_size[0] / max_num_x
+        new_x = []
+        for num in x:
+            new_num = num * scale_x
+            new_x.append(new_num)
+        # 换算成对应坐标
+        final_y = []
+        for y in new_y:  # 里边有一步轴对称
+            new_y_ = config.pp_strains_location2[1] - y + y_offset
+            final_y.append(new_y_)
+        final_x = []
+        for x in new_x:
+            new_x_ = config.pp_strains_location[0] + x
+            final_x.append(new_x_)
+        xy = []
+        for i in range(n):
+            xy.append((final_x[i], final_y[i]))
+        # 画线
+        draw = ImageDraw.Draw(im)
+        for i in range(n - 1):
+            x_y = [xy[i], xy[i + 1]]
+            draw.line(x_y, fill=config.pp_strains_color, width=config.pp_strains_line_width)
     return im
 
 
@@ -414,6 +422,62 @@ def output_note_count(im, g_inf, y_offset):
     im = info_print(im, circle, i[0], i[1], i[2], i[3] + y_offset, i[4], i[5])
     i = config.output_note_slider
     im = info_print(im, slider, i[0], i[1], i[2], i[3] + y_offset, i[4], i[5])
+    return im
+
+
+def output_pp(im, g_inf, y_offset):
+    pp_current = g_inf.pp_current()
+
+    font = config.output_pp_current[0]
+    fontsize = config.output_pp_current[1]
+    text = str(pp_current)
+    num_width, num_height = ImageFont.truetype(font, fontsize).getsize(text)
+
+    text = 'pp'
+    font = config.output_str_pp[0]
+    fontsize = config.output_str_pp[1]
+    pp_width, pp_height = ImageFont.truetype(font, fontsize).getsize(text)
+
+    total_width = num_width + pp_width
+    total_height = num_height + pp_height
+
+    x = config.output_pp_current_position[0]
+    y = config.output_pp_current_position[1]
+    align = config.output_pp_current_position[2]
+    draw = ImageDraw.Draw(im)
+
+    if align[0] == 'l':
+        num_x = x
+        pp_x = x + num_width
+    elif align[0] == 'c':
+        num_x = x - (total_width / 2)
+        pp_x = num_x + num_width
+    elif align[0] == 'r':
+        num_x = x - total_width
+        pp_x = x
+    else:
+        print('对齐参数设置有误，请确认，格式为 {左右对齐}{上下对齐} (可用参数c l r a b)，示例:rc(right,centre  右对齐，中间对齐)')
+        exit(0)
+
+    if align[1] == 'a':
+        y = y
+    elif align[1] == 'c':
+        y = y - (total_height / 2)
+    elif align[1] == 'b':
+        y = y - total_height
+    else:
+        print('对齐参数设置有误，请确认，格式为 {左右对齐}{上下对齐} (可用参数c l r a b)，示例:rc(right,centre  右对齐，中间对齐)')
+        exit(0)
+    fill = config.output_pp_current[2]
+    font = str(config.output_pp_current[0])
+    size = int(config.output_pp_current[1])
+    draw.text((num_x, y + y_offset), str(pp_current), fill=fill,
+              font=ImageFont.truetype(font, size))
+    fill = config.output_str_pp[2]
+    font = str(config.output_str_pp[0])
+    size = int(config.output_str_pp[1])
+    draw.text((pp_x, y + y_offset + config.output_str_pp_y_offset), 'pp', fill,
+              font=ImageFont.truetype(font, size))
     return im
 
 

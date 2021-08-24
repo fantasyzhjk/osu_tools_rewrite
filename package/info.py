@@ -6,6 +6,7 @@ import sys
 sys.path.append("..")
 import config
 import requests
+import httpx
 
 
 def get_self_pp_plus():
@@ -53,11 +54,17 @@ class MapInfo:
 
 class GosuInfoStd:
     def __init__(self):
-        self.info = loads(get('http://localhost:24050/json').content)
+        r = httpx.get('http://localhost:24050/json')
+        self.info = r.json()
+        # self.info = loads(get('http://localhost:24050/json').content)
         # self.info = load(open('./package/gosu_output.json', 'r', encoding='utf8'))
 
     def state(self):
         i = self.info['menu']['state']
+        return i
+
+    def ur(self):
+        i = self.info['gameplay']['hits']['unstableRate']
         return i
 
     def map_status(self):
