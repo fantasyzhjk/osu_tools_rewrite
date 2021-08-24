@@ -18,10 +18,10 @@
 #
 # 用户变量配置
 #
-user_name = 'deannzs'
+user_name = ''
 user_id = ''
 # 用户头像路径
-user_avatar = 'resource/image/deannzs.jpg'
+user_avatar = 'resource/image/avatar.jpg'
 # osu logo图片目录
 osu_image = 'resource/image/osu!.png'
 # 个性签名
