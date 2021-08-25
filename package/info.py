@@ -1,7 +1,7 @@
 from requests import get
 from json import loads
 from json import load
-import oppadc
+from . import oppadc
 import sys
 sys.path.append("..")
 import config

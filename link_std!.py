@@ -206,7 +206,7 @@ def output_info(im, g_inf, y_offset):
     ur = eval(config.output_ur_format)
     a = ['bpm', 'mapper', 'difficulty', 'key_count_k1', 'key_count_k2', 'key_count_m1', 'key_count_m2', 'score',
          'max_combo', 'accuracy', 'user_signature', 'ur',
-         'time_length_full' if g_inf.state() == 2 else 'time_length_now']
+         'time_length_now' if g_inf.state() == 2 else 'time_length_full']
     for i in a:
         i = eval('''[eval(i), config.output_{0}[0], config.output_{0}[1], config.output_{0}[2],
                      config.output_{0}[3], config.output_{0}[4], config.output_{0}[5]]'''.format(i))
