@@ -129,19 +129,19 @@ class GosuInfoStd:
         return i
 
     def c300(self):
-        i = self.info['resultsScreen']['300']
+        i = self.info['gameplay']['hits']['300']
         return i
 
     def c100(self):
-        i = self.info['resultsScreen']['100']
+        i = self.info['gameplay']['hits']['100']
         return i
 
     def c50(self):
-        i = self.info['resultsScreen']['50']
+        i = self.info['gameplay']['hits']['50']
         return i
 
     def c0(self):
-        i = self.info['resultsScreen']['0']
+        i = self.info['gameplay']['hits']['0']
         return i
 
     def stars(self):
@@ -213,11 +213,11 @@ class GosuInfoStd:
         return i
 
     def score(self):
-        i = self.info['resultsScreen']['score']
+        i = self.info['gameplay']['score']
         return i
 
     def max_combo(self):
-        i = self.info['resultsScreen']['maxCombo']
+        i = self.info['gameplay']['combo']['max']
         return i
 
     def accuracy(self):
@@ -226,6 +226,10 @@ class GosuInfoStd:
 
     def time_length_full(self):
         i = self.info['menu']['bm']['time']['full']
+        return i
+
+    def time_length_now(self):
+        i = self.info['menu']['bm']['time']['current']
         return i
 
     def mod_str(self):

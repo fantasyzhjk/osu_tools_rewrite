@@ -73,7 +73,7 @@ def get_played_time():
 def main():
     g_inf = GosuInfoStd()
 
-    if g_inf.state() == 7:  # 判断打完图或回放后的结算界面
+    if g_inf.state() == 7 or 2:  # 判断打完图或回放后或者fail的结算或者暂停界面
         if g_inf.mode() == 0:  # 判断std
             bg_dir = g_inf.bg_dir()
 
@@ -110,7 +110,7 @@ def main():
             print('你这不是std啊，是不是用错程序了啊喂！')
             exit(0)
     else:
-        print('不在打图流程后的成绩界面，打个图或者看个回放吧！')
+        print('不在打图流程后的成绩界面 or Fail的暂停界面，打个图或者看个回放吧！')
         exit(0)
 
 
@@ -136,24 +136,26 @@ def output_rank_status(im, g_inf, y_offset):
 def output_rank_icon(im, g_inf, y_offset):
     rank = g_inf.rank_result()
     rank = str(rank)
-    if rank == 'SSH':
-        rank = Image.open()
-    elif rank == 'SS':
-        rank = Image.open(config.result_rank_icon_ssh)
-    elif rank == 'SH':
-        rank = Image.open(config.result_rank_icon_sh)
-    elif rank == 'S':
-        rank = Image.open(config.result_rank_icon_s)
-    elif rank == 'A':
-        rank = Image.open(config.result_rank_icon_a)
-    elif rank == 'B':
-        rank = Image.open(config.result_rank_icon_b)
-    elif rank == 'C':
-        rank = Image.open(config.result_rank_icon_c)
-    elif rank == 'D':
-        rank = Image.open(config.result_rank_icon_d)
-    else:
-        pass
+    if g_inf.state() == 2:
+        rank = Image.open(config.result_rank_icon_f)
+    elif g_inf.state() == 7:
+        if rank == 'SSH':
+            rank = Image.open(config.result_rank_icon_ssh)
+        elif rank == 'SS':
+            rank = Image.open(config.result_rank_icon_ss)
+        elif rank == 'SH':
+            rank = Image.open(config.result_rank_icon_sh)
+        elif rank == 'S':
+            rank = Image.open(config.result_rank_icon_s)
+        elif rank == 'A':
+            rank = Image.open(config.result_rank_icon_a)
+        elif rank == 'B':
+            rank = Image.open(config.result_rank_icon_b)
+        elif rank == 'C':
+            rank = Image.open(config.result_rank_icon_c)
+        elif rank == 'D':
+            rank = Image.open(config.result_rank_icon_d)
+
     rank = rank.resize(config.result_rank_size)
     rank = rank.convert('RGBA')
     im.paste(rank, (config.position_rank[0], config.position_rank[1] + y_offset), rank)
@@ -199,28 +201,20 @@ def output_info(im, g_inf, y_offset):
     max_combo = eval(config.output_max_combo_format)
     accuracy = eval(config.output_accuracy_format)
     time_length_full = eval(config.output_time_length_full_format)
+    time_length_now = eval(config.output_time_length_now_format)
     user_signature = config.user_signature
     ur = eval(config.output_ur_format)
-    for i in ['bpm',
-              'mapper',
-              'difficulty',
-              'key_count_k1',
-              'key_count_k2',
-              'key_count_m1',
-              'key_count_m2',
-              'score',
-              'max_combo',
-              'accuracy',
-              'time_length_full',
-              'user_signature',
-              'ur']:
+    a = ['bpm', 'mapper', 'difficulty', 'key_count_k1', 'key_count_k2', 'key_count_m1', 'key_count_m2', 'score',
+         'max_combo', 'accuracy', 'user_signature', 'ur',
+         'time_length_full' if g_inf.state() == 2 else 'time_length_now']
+    for i in a:
         i = eval('''[eval(i), config.output_{0}[0], config.output_{0}[1], config.output_{0}[2],
                      config.output_{0}[3], config.output_{0}[4], config.output_{0}[5]]'''.format(i))
         im = info_print(im, i[0], i[1], i[2], i[3], i[4] + y_offset, i[5], i[6])
     return im
 
 
-# mod图标输出方式，默认为从设定位置开始依次向右80xp
+# mod图标输出方式，默认为从设定位置开始依次向下100xp
 def output_method_mod(im, mods_str, y_offset):  # 输入图片,mod的字符串,输出打印完的图片
     mods_str = str.lower(mods_str)  # 把所有字符中的大写字母转换成小写字母
     if mods_str == 'nm':  # 判断是否无mod

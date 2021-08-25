@@ -94,6 +94,7 @@ result_rank_icon_a = 'resource/image/ranking/ranking-A@2X.png'
 result_rank_icon_b = 'resource/image/ranking/ranking-B@2X.png'
 result_rank_icon_c = 'resource/image/ranking/ranking-C@2X.png'
 result_rank_icon_d = 'resource/image/ranking/ranking-D@2X.png'
+result_rank_icon_f = 'resource/image/ranking/f.png'
 # mod图标的位置 [x, y]
 position_mod = [1770, 210]
 # mod图标的大小
@@ -187,4 +188,8 @@ output_accuracy_format = "str({0}).format(g_inf.accuracy()) + '%'"
 output_time_length_full = ["resource/fonts/Torus-Regular.ttf", 36, 121, 318 - 3, (235, 194, 0), 'lc']
 output_time_length_full_format = ("str(int((float(str({0}).format(g_inf.time_length_full()))/1000)/60)) + ':' + "
                                   "str(int((float(str({0}).format(g_inf.time_length_full()))/1000)%60))")
+
+output_time_length_now = ["resource/fonts/Torus-Regular.ttf", 36, 121, 318 - 3, (235, 194, 0), 'lc']
+output_time_length_now_format = ("str(int((float(str({0}).format(g_inf.time_length_now()))/1000)/60)) + ':' + "
+                                 "str(int((float(str({0}).format(g_inf.time_length_now()))/1000)%60))")
 # 什么狗屁玩意又臭又长，真亏我写得出来，你们自己看着改改，反正最后要eval这个语句，要一句成表达式，或者你字符串拼接我也不管
