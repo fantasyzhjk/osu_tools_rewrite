@@ -72,11 +72,9 @@ def get_played_time():
 
 def main():
     g_inf = GosuInfoStd()
-
     if g_inf.state() == 7 or 2:  # 判断打完图或回放后或者fail的结算或者暂停界面
         if g_inf.mode() == 0:  # 判断std
             bg_dir = g_inf.bg_dir()
-
             if bg_dir[-3:] == 'png' or bg_dir[-3:] == 'jpg':  # 判断后缀做背景
                 bg = bg_dir
                 bg = bg_maker(bg)
@@ -105,7 +103,13 @@ def main():
 
             box = (0, y_offset, config.bg_resize_weight, y_offset + config.bg_resize_height)
             im = im.crop(box)
-            im.show()
+            try:
+                im.show()
+                exit(0)
+            except Exception:
+                print('显示图片失败, 生成结果将直接保存在运行目录下')
+                im.save('结果.jpg')
+                exit(0)
         else:
             print('你这不是std啊，是不是用错程序了啊喂！')
             exit(0)
@@ -155,6 +159,9 @@ def output_rank_icon(im, g_inf, y_offset):
             rank = Image.open(config.result_rank_icon_c)
         elif rank == 'D':
             rank = Image.open(config.result_rank_icon_d)
+        else:
+            print('无法获取到正确的成绩，请重试')
+            exit(0)
 
     rank = rank.resize(config.result_rank_size)
     rank = rank.convert('RGBA')

@@ -54,7 +54,11 @@ class MapInfo:
 
 class GosuInfoStd:
     def __init__(self):
-        r = httpx.get('http://localhost:24050/json')
+        try:
+            r = httpx.get('http://localhost:24050/json')
+        except httpx.ConnectError:
+            print("无法连接到gosumemory，请重试")
+            exit()
         self.info = r.json()
         # self.info = loads(get('http://localhost:24050/json').content)
         # self.info = load(open('./package/gosu_output.json', 'r', encoding='utf8'))
